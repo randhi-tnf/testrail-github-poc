@@ -12,7 +12,7 @@ on:
 name: Run all frameworks
 
 env:
-  TESTRAIL_USER: randhi@thoughtandfunction.com
+  TESTRAIL_USER: github@thoughtandfunction.com
   TESTRAIL_URL: https://randhi.testrail.io/
   PROJECT_NAME: Demo
 
