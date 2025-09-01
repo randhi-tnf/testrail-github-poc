@@ -47,6 +47,5 @@ jobs:
             -p "${{ secrets.TESTRAIL_USER_PW }}" \
             parse_junit \
             -f "reports/junit*.xml" \
-            --section-id "40" \
             --title "Cypress automated tests" \
             --run-description "GitHub workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
