@@ -22,7 +22,7 @@ jobs:
     name: Cypress
     runs-on: ubuntu-latest
     env:
-      WORKING_DIR: ./cypress
+      WORKING_DIR: ./
     steps:
       - name: Checkout
         uses: actions/checkout@v3
