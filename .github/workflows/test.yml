@@ -1,0 +1,52 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+name: Run all frameworks
+
+env:
+  TESTRAIL_USER: randhi@thoughtandfunction.com
+  TESTRAIL_URL: https://randhi.testrail.io/
+  PROJECT_NAME: Demo
+
+jobs:
+
+  cypress:
+    name: Cypress
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIR: cypress
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Execute Cypress tests
+        continue-on-error: true
+        uses: cypress-io/github-action@v5.3.0
+        with:
+          working-directory: ${{ env.WORKING_DIR }}
+          command: npx cypress run --reporter junit --reporter-options mochaFile=reports/junit-[hash].xml
+      - name: Setup Python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: '3.x'
+      - name: Execute TestRail CLI to upload results
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          pip install trcli
+          trcli -y \
+            -h ${{ env.TESTRAIL_URL }} \
+            --project "${{ env.PROJECT_NAME }}" \
+            -u ${{ env.TESTRAIL_USER }} \
+            -p "${{ secrets.TESTRAIL_USER_PW }}" \
+            parse_junit \
+            -f "reports/junit*.xml" \
+            --section-id "40" \
+            --title "Cypress automated tests" \
+            --run-description "GitHub workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
